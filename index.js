@@ -4,9 +4,23 @@
     const fs = require('fs');
     const path = require('path');
 
-    const outputPath = process.argv.pop();
-    const imageFrame = process.argv.pop();
-    const imgPath = process.argv.pop();
+    // Parse command-line arguments
+    let outputPath, imageFrame, imgPath;
+    for (let i = 2; i < process.argv.length; i++) {
+        const arg = process.argv[i];
+        if (arg.startsWith('--outputPath=')) {
+            outputPath = arg.split('=')[1];
+        } else if (arg.startsWith('--imageFrame=')) {
+            imageFrame = arg.split('=')[1];
+        } else if (arg.startsWith('--inputPath=')) {
+            imgPath = arg.split('=')[1];
+        }
+    }
+
+    if (!outputPath || !imageFrame || !imgPath) {
+        console.error('Usage: node index.js --outputPath=/path/to/save/ --imageFrame=/path/to/frame/image.png --inputPath=/path/to/original/images/');
+        process.exit(1);
+    }
 
     const filePaths = getAllFiles(imgPath);
     let counter = 0;
